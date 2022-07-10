@@ -46,16 +46,25 @@ export async function cardIsExpired(
 }
 
 export async function cardIsActived(
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) {
   const { card } = res.locals;
 
-  if (card.password) {
+  const isRechargeRoute = req.path.includes("recharges");
+
+  if (card.password && !isRechargeRoute) {
     throw errorUtils.generateError({
       type: "UnauthorizedError",
       message: "This card has already been activated.",
+    });
+  }
+
+  if (!card.password && isRechargeRoute) {
+    throw errorUtils.generateError({
+      type: "UnauthorizedError",
+      message: "This card has not been activated yet.",
     });
   }
 
