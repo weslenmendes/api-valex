@@ -8,22 +8,39 @@ import {
   employeeExists,
   employeeHasThisCardType,
 } from "./../middlewares/employeeValidationMiddleware.js";
+import {
+  cardExists,
+  cardIsActived,
+  cardIsCVCValid,
+  cardIsExpired,
+} from "./../middlewares/cardValidationMiddleware.js";
 
 import {
-  createCardSchemaHeader as createCardSH,
   createCardSchemaBody as createCardSB,
+  activateCardSchemaParams as activateCardSP,
+  activateCardSchemaBody as activateCardSB,
 } from "./../schemas/cardSchema.js";
 
 const cardRouter = Router();
 
 cardRouter.post(
   "/cards",
-  validateSchema(createCardSH, "header"),
-  validateSchema(createCardSB, "body"),
   validateApiKey,
+  validateSchema(createCardSB, "body"),
   employeeExists,
   employeeHasThisCardType,
   cardController.createCard,
+);
+
+cardRouter.put(
+  "/cards/activate/:cardId",
+  validateSchema(activateCardSP, "params"),
+  validateSchema(activateCardSB, "body"),
+  cardExists,
+  cardIsExpired,
+  cardIsActived,
+  cardIsCVCValid,
+  cardController.activateCard,
 );
 
 export default cardRouter;

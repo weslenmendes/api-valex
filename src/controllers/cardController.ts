@@ -6,7 +6,16 @@ export async function createCard(req: Request, res: Response) {
   const { cardType } = req.body;
   const { employee } = res.locals;
 
-  await cardService.createCard({ employee, cardType });
+  const result = await cardService.createCard({ employee, cardType });
 
-  res.sendStatus(201);
+  res.status(201).send({ ...result });
+}
+
+export async function activateCard(req: Request, res: Response) {
+  const { cardId } = req.params;
+  const { password } = req.body;
+
+  await cardService.activateCard(+cardId, password);
+
+  res.sendStatus(200);
 }
