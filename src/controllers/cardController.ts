@@ -30,3 +30,15 @@ export async function getCardBalanceAndTransactions(
 
   res.send(result);
 }
+
+export async function manageCard(req: Request, res: Response) {
+  const { cardId } = req.params;
+  const { password } = req.body;
+
+  if (req.path.includes("block"))
+    await cardService.manageCard(+cardId, password, true);
+  else if (req.path.includes("unblock"))
+    await cardService.manageCard(+cardId, password, false);
+
+  res.sendStatus(200);
+}

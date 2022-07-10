@@ -11,6 +11,7 @@ import {
 import {
   cardExists,
   cardIsActived,
+  cardIsBlocked,
   cardIsCVCValid,
   cardIsExpired,
 } from "./../middlewares/cardValidationMiddleware.js";
@@ -19,6 +20,7 @@ import {
   createCardSchemaBody as createCardSB,
   activateCardSchemaParams as activateCardSP,
   activateCardSchemaBody as activateCardSB,
+  manageCardSchemaBody as manageCardSB,
 } from "./../schemas/cardSchema.js";
 
 const cardRouter = Router();
@@ -41,6 +43,16 @@ cardRouter.put(
   cardIsActived,
   cardIsCVCValid,
   cardController.activateCard,
+);
+
+cardRouter.put(
+  "/cards/block/:cardId",
+  validateSchema(activateCardSP, "params"),
+  validateSchema(manageCardSB, "body"),
+  cardExists,
+  cardIsExpired,
+  cardIsBlocked,
+  cardController.manageCard,
 );
 
 cardRouter.get(

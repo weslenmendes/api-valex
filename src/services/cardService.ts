@@ -8,6 +8,7 @@ import { formatEmployeeName } from "./../utils/formatEmployeeName.js";
 import {
   encryptSecurityCode,
   encryptPassword,
+  decryptPassword,
 } from "./../utils/encryptUtils.js";
 import { getNowAddAndFormatDate } from "./../utils/dateUtils.js";
 import { generateError } from "./../utils/errorUtils.js";
@@ -91,4 +92,25 @@ export async function getBalanceAndTransactions(cardId: number) {
     transactions,
     recharges,
   };
+}
+
+export async function manageCard(
+  cardId: number,
+  password: string,
+  isBlocked: boolean,
+) {
+  const cardData = await cardRepository.findById(cardId);
+
+  const isEquals = decryptPassword(password, cardData.password);
+
+  if (!isEquals) {
+    throw generateError({
+      type: "UnauthorizedError",
+      message: "The password is incorrect.",
+    });
+  }
+
+  cardData.isBlocked = isBlocked;
+
+  await cardRepository.update(cardId, cardData);
 }

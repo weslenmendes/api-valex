@@ -62,6 +62,23 @@ export async function cardIsActived(
   next();
 }
 
+export async function cardIsBlocked(
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const { card } = res.locals;
+
+  if (card.isBlocked) {
+    throw errorUtils.generateError({
+      type: "UnauthorizedError",
+      message: "This card has been blocked.",
+    });
+  }
+
+  next();
+}
+
 export async function cardIsCVCValid(
   req: Request,
   res: Response,

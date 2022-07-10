@@ -28,3 +28,9 @@ export const activateCardSchemaBody = Joi.object({
     .pattern(/^[0-9]{4}$/, "password")
     .required(),
 });
+
+export const manageCardSchemaBody = Joi.object({
+  password: Joi.string()
+    .pattern(/^[0-9]{4}$/, "password")
+    .required(),
+}).required();
