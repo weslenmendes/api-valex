@@ -15,6 +15,7 @@ import {
   cardIsActived,
   cardIsExpired,
 } from "../middlewares/cardValidationMiddleware.js";
+import { companyHasThisEmployee } from "./../middlewares/rechargeValidationMiddleware.js";
 
 rechargeRouter.post(
   "/recharges/:cardId",
@@ -24,6 +25,7 @@ rechargeRouter.post(
   cardExists,
   cardIsActived,
   cardIsExpired,
+  companyHasThisEmployee,
   rechargeController.recharge,
 );
 
