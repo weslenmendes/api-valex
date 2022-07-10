@@ -41,6 +41,10 @@ export function errorDetailsGenerator(err: any): errorDetails {
       statusCode: StatusCodes.NotFound,
       message: err.message || "Not Found",
     },
+    UnprocessableEntityError: {
+      statusCode: StatusCodes.UnprocessableEntity,
+      message: err.message || "Unprocessable Entity",
+    },
     InternalServerError: {
       statusCode: StatusCodes.InternalServerError,
       message: err.message || "An internal error has occurred",
@@ -49,7 +53,7 @@ export function errorDetailsGenerator(err: any): errorDetails {
 
   return isDetailError(err)
     ? err
-    : errorDetails[err.type] || errorDetails["InternalServerError"];
+    : errorDetails[err.type] || errorDetails.InternalServerError;
 }
 
 export function generateError(err: err): errorDetails {

@@ -2,11 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { Schema } from "joi";
 import * as errorUtils from "./../utils/errorUtils.js";
 
-type Local = "body" | "query" | "params" | "header";
+type Local = "body" | "query" | "params" | "headers";
 
 export function validateSchema(schema: Schema, local: Local) {
   return (req: Request, res: Response, next: NextFunction) => {
-    const result = schema.validate(req[local], { abortEarly: false });
+    const result = schema.validate(req[local], {
+      abortEarly: false,
+    });
 
     if (result.error) {
       throw errorUtils.generateError({

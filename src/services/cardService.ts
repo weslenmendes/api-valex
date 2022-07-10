@@ -3,7 +3,10 @@ import { faker } from "@faker-js/faker";
 import * as cardRepository from "./../repositories/cardRepository.js";
 
 import { formatEmployeeName } from "./../utils/formatEmployeeName.js";
-import { encryptSecurityCode } from "./../utils/encryptUtils.js";
+import {
+  encryptSecurityCode,
+  encryptPassword,
+} from "./../utils/encryptUtils.js";
 import { getNowAddAndFormatDate } from "./../utils/dateUtils.js";
 import { generateError } from "./../utils/errorUtils.js";
 
@@ -28,6 +31,8 @@ export async function createCard({ employee, cardType }: CreateCard) {
       message: "An error occurred while creating the card.",
     });
   }
+
+  return card.rows[0];
 }
 
 function generateCardData(
@@ -41,7 +46,7 @@ function generateCardData(
   const cardData: any = {};
 
   cardData.employeeId = employeeId;
-  cardData.number = faker.finance.creditCardNumber();
+  cardData.number = faker.finance.creditCardNumber().replace(/-/g, "");
   cardData.cardholderName = formatEmployeeName(employeeFullName);
   cardData.securityCode = encryptSecurityCode(faker.finance.creditCardCVV());
   cardData.expirationDate = getNowAddAndFormatDate(5, "years", "MM/YY");
@@ -52,4 +57,19 @@ function generateCardData(
   cardData.type = cardType;
 
   return cardData;
+}
+
+export async function activateCard(cardId: number, password: string) {
+  const cardData = await cardRepository.findById(cardId);
+
+  if (!cardData) {
+    throw generateError({
+      type: "NotFoundError",
+      message: "The card does not exist.",
+    });
+  }
+
+  cardData.password = encryptPassword(password);
+
+  await cardRepository.update(cardId, cardData);
 }

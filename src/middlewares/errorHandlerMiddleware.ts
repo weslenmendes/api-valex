@@ -10,7 +10,7 @@ export function errorHandler(
   const { statusCode, message } = errorDetailsGenerator(err);
 
   if (message) {
-    return res.status(statusCode).send({ message });
+    return res.status(statusCode).json({ message });
   }
 
   res.sendStatus(statusCode);

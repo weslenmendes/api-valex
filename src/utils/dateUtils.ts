@@ -16,3 +16,7 @@ export function getNowAddAndFormatDate(
 ) {
   return addAndFormatDate(new Date(), value, type, format);
 }
+
+export function isExpired(expirationDate: string) {
+  return dayjs(expirationDate).isBefore(dayjs(Date.now()).format("MM-YY"));
+}
