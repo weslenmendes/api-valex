@@ -37,7 +37,7 @@ export async function manageCard(req: Request, res: Response) {
 
   if (req.path.includes("block"))
     await cardService.manageCard(+cardId, password, true);
-  else if (req.path.includes("unblock"))
+  else if (req.path.includes("unlock"))
     await cardService.manageCard(+cardId, password, false);
 
   res.sendStatus(200);

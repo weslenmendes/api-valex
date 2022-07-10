@@ -63,16 +63,25 @@ export async function cardIsActived(
 }
 
 export async function cardIsBlocked(
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) {
   const { card } = res.locals;
 
-  if (card.isBlocked) {
+  const isUnlockRoute = req.path.includes("unlock");
+
+  if (card.isBlocked && !isUnlockRoute) {
     throw errorUtils.generateError({
       type: "UnauthorizedError",
       message: "This card has been blocked.",
+    });
+  }
+
+  if (!card.isBlocked && isUnlockRoute) {
+    throw errorUtils.generateError({
+      type: "UnauthorizedError",
+      message: "This card has already been unlocked.",
     });
   }
 

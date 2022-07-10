@@ -55,6 +55,16 @@ cardRouter.put(
   cardController.manageCard,
 );
 
+cardRouter.put(
+  "/cards/unlock/:cardId",
+  validateSchema(activateCardSP, "params"),
+  validateSchema(manageCardSB, "body"),
+  cardExists,
+  cardIsExpired,
+  cardIsBlocked,
+  cardController.manageCard,
+);
+
 cardRouter.get(
   "/cards/statements/:cardId",
   validateSchema(activateCardSP, "params"),
