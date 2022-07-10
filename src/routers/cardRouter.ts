@@ -43,4 +43,11 @@ cardRouter.put(
   cardController.activateCard,
 );
 
+cardRouter.get(
+  "/cards/statements/:cardId",
+  validateSchema(activateCardSP, "params"),
+  cardExists,
+  cardController.getCardBalanceAndTransactions,
+);
+
 export default cardRouter;

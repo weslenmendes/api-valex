@@ -1,6 +1,8 @@
 import { faker } from "@faker-js/faker";
 
 import * as cardRepository from "./../repositories/cardRepository.js";
+import * as rechargeRepository from "./../repositories/rechargeRepository.js";
+import * as paymentRepository from "./../repositories/paymentRepository.js";
 
 import { formatEmployeeName } from "./../utils/formatEmployeeName.js";
 import {
@@ -72,4 +74,21 @@ export async function activateCard(cardId: number, password: string) {
   cardData.password = encryptPassword(password);
 
   await cardRepository.update(cardId, cardData);
+}
+
+export async function getBalanceAndTransactions(cardId: number) {
+  const recharges = await rechargeRepository.findByCardId(cardId);
+  const transactions = await paymentRepository.findByCardId(cardId);
+
+  const sum = (acc: number, curr: any): number => acc + curr.amount;
+
+  const rechargesSum = recharges.reduce(sum, 0);
+  const transactionsSum = transactions.reduce(sum, 0);
+  const balance = rechargesSum - transactionsSum;
+
+  return {
+    balance,
+    transactions,
+    recharges,
+  };
 }

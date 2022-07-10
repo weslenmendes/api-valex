@@ -19,3 +19,14 @@ export async function activateCard(req: Request, res: Response) {
 
   res.sendStatus(200);
 }
+
+export async function getCardBalanceAndTransactions(
+  req: Request,
+  res: Response,
+) {
+  const { cardId } = req.params;
+
+  const result = await cardService.getBalanceAndTransactions(+cardId);
+
+  res.send(result);
+}
