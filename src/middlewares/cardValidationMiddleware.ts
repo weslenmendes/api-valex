@@ -12,7 +12,7 @@ export async function cardExists(
   res: Response,
   next: NextFunction,
 ) {
-  const cardId = +req.params.cardId;
+  const cardId = +req.params.cardId || +req.body.cardId;
 
   const card = await cardRepository.findById(cardId);
 
@@ -53,15 +53,16 @@ export async function cardIsActived(
   const { card } = res.locals;
 
   const isRechargeRoute = req.path.includes("recharges");
+  const isPurchaseRoute = req.path.includes("purchases");
 
-  if (card.password && !isRechargeRoute) {
+  if (card.password && !isRechargeRoute && !isPurchaseRoute) {
     throw errorUtils.generateError({
       type: "UnauthorizedError",
       message: "This card has already been activated.",
     });
   }
 
-  if (!card.password && isRechargeRoute) {
+  if (!card.password && (isRechargeRoute || isPurchaseRoute)) {
     throw errorUtils.generateError({
       type: "UnauthorizedError",
       message: "This card has not been activated yet.",

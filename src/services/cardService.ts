@@ -10,7 +10,7 @@ import {
   encryptPassword,
   decryptPassword,
 } from "./../utils/encryptUtils.js";
-import { getNowAddAndFormatDate } from "./../utils/dateUtils.js";
+import { getNowAddAndFormatDate, formatDate } from "./../utils/dateUtils.js";
 import { generateError } from "./../utils/errorUtils.js";
 
 type Employee = {
@@ -81,6 +81,26 @@ export async function getBalanceAndTransactions(cardId: number) {
   const recharges = await rechargeRepository.findByCardId(cardId);
   const transactions = await paymentRepository.findByCardId(cardId);
 
+  const rechargesFormated = recharges.map((recharge) => {
+    return {
+      id: +recharge.id,
+      cardId: +recharge.cardId,
+      amount: +recharge.amount,
+      timestamp: formatDate(recharge.timestamp, "DD/MM/YYYY"),
+    };
+  });
+
+  const transactionsFormated = transactions.map((transaction) => {
+    return {
+      id: +transaction.id,
+      cardId: +transaction.cardId,
+      businessId: +transaction.businessId,
+      businessName: transaction.businessName,
+      timestamp: formatDate(transaction.timestamp, "DD/MM/YYYY"),
+      amount: +transaction.amount,
+    };
+  });
+
   const sum = (acc: number, curr: any): number => acc + curr.amount;
 
   const rechargesSum = recharges.reduce(sum, 0);
@@ -89,8 +109,8 @@ export async function getBalanceAndTransactions(cardId: number) {
 
   return {
     balance,
-    transactions,
-    recharges,
+    transactions: transactionsFormated,
+    recharges: rechargesFormated,
   };
 }
 

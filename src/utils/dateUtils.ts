@@ -20,3 +20,7 @@ export function getNowAddAndFormatDate(
 export function isExpired(expirationDate: string) {
   return dayjs(expirationDate).isBefore(dayjs(Date.now()).format("MM-YY"));
 }
+
+export function formatDate(date: Date, format: string = "MM/YY") {
+  return dayjs(date).format(format);
+}
