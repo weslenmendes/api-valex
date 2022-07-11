@@ -7,6 +7,7 @@ import * as paymentRepository from "./../repositories/paymentRepository.js";
 import { formatEmployeeName } from "./../utils/formatEmployeeName.js";
 import {
   encryptSecurityCode,
+  decryptSecurityCode,
   encryptPassword,
   decryptPassword,
 } from "./../utils/encryptUtils.js";
@@ -34,6 +35,8 @@ export async function createCard({ employee, cardType }: CreateCard) {
       message: "An error occurred while creating the card.",
     });
   }
+
+  card.rows[0].securityCode = decryptSecurityCode(card.rows[0].securityCode);
 
   return card.rows[0];
 }
