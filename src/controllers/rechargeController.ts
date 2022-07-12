@@ -8,5 +8,5 @@ export async function recharge(req: Request, res: Response) {
 
   await rechargeService.rechargeCard(+cardId, amount);
 
-  res.sendStatus(201);
+  res.status(201).send({ message: "Recharge successful." });
 }

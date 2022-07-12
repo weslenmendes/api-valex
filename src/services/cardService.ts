@@ -38,7 +38,7 @@ export async function createCard({ employee, cardType }: CreateCard) {
 
   card.rows[0].securityCode = decryptSecurityCode(card.rows[0].securityCode);
 
-  return card.rows[0];
+  return { message: "Card created successfully." };
 }
 
 function generateCardData(

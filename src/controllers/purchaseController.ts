@@ -8,7 +8,7 @@ export async function purchase(req: Request, res: Response) {
 
   await purchaseService.purchaseItem(card, businessId, amount, password);
 
-  res.sendStatus(200);
+  res.status(201).send({ message: "Purchase successful." });
 }
 
 export async function onlinePurchase(req: Request, res: Response) {
@@ -17,5 +17,5 @@ export async function onlinePurchase(req: Request, res: Response) {
 
   await purchaseService.purchaseItemOnline(card, +businessId, +amount);
 
-  res.sendStatus(200);
+  res.status(201).send({ message: "Purchase successful." });
 }
