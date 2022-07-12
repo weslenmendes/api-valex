@@ -39,7 +39,7 @@ $ npm run dev
         "type": 'groceries' | 'restaurant' | 'transport' | 'education' | 'health'
       }
 
-- POST /cards/activate/:cardId
+- PUT /cards/activate/:cardId
     - Route to activate a card
     - headers: {}
     - body: {
