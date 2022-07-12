@@ -7,13 +7,13 @@ export const createCardSchemaBody = Joi.object()
       "string.required": "The 'employeeId' field is required",
     }),
     cardType: Joi.string()
-      .valid("groceries", "restaurants", "transport", "education", "health")
+      .valid("groceries", "restaurant", "transport", "education", "health")
       .required()
       .messages({
         "string.empty": "The 'cardType' field is required",
         "string.required": "The 'cardType' field is required",
         "any.only":
-          "The 'cardType' field must be one of: 'groceries', 'restaurants', 'transport', 'education', 'health'",
+          "The 'cardType' field must be one of: 'groceries', 'restaurant', 'transport', 'education', 'health'",
       }),
   })
   .required();
