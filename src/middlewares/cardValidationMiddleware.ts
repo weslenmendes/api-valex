@@ -13,14 +13,28 @@ export async function cardExists(
 ) {
   const cardId = +req.params.cardId || +req.body.cardId;
 
-  if (!cardId) {
+  const isPurchaseOnlineRoute = req.path.includes("purchases/online");
+
+  if (!cardId && !isPurchaseOnlineRoute) {
     throw errorUtils.generateError({
       type: "UnprocessableEntityError",
       message: "cardId is required.",
     });
   }
 
-  const card = await cardRepository.findById(cardId);
+  let card = null;
+
+  if (isPurchaseOnlineRoute) {
+    const { number, holderName, expirationDate } = req.body;
+
+    card = await cardRepository.findByCardDetails(
+      number,
+      holderName,
+      expirationDate,
+    );
+  } else {
+    card = await cardRepository.findById(cardId);
+  }
 
   if (!card) {
     throw errorUtils.generateError({

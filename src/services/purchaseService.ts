@@ -5,18 +5,13 @@ import * as cardService from "./../services/cardService.js";
 import * as errorUtils from "./../utils/errorUtils.js";
 import * as encryptUtils from "./../utils/encryptUtils.js";
 
-export async function purchaseItem(
-  card: cardRepository.Card,
+async function businessExists(
   businessId: number,
-  amount: number,
-  password: string,
-) {
-  const cardData = await cardRepository.findById(card.id);
-
-  if (!encryptUtils.decryptPassword(password, cardData.password)) {
+): Promise<businessRepository.Business> {
+  if (!businessId) {
     throw errorUtils.generateError({
-      type: "UnauthorizedError",
-      message: "This password is incorrect.",
+      type: "UnprocessableEntityError",
+      message: "The businessId is required.",
     });
   }
 
@@ -29,13 +24,22 @@ export async function purchaseItem(
     });
   }
 
-  if (cardData.type !== business.type) {
+  return business;
+}
+
+async function areSameType(
+  card: cardRepository.Card,
+  business: businessRepository.Business,
+) {
+  if (card.type !== business.type) {
     throw errorUtils.generateError({
       type: "UnauthorizedError",
       message: "This card is not valid for this business.",
     });
   }
+}
 
+async function cardHasBalance(card: cardRepository.Card, amount: number) {
   const { balance } = await cardService.getBalanceAndTransactions(card.id);
 
   if (+balance < +amount) {
@@ -44,6 +48,40 @@ export async function purchaseItem(
       message: "This card does not have enough balance.",
     });
   }
+}
+
+export async function purchaseItem(
+  card: cardRepository.Card,
+  businessId: number,
+  amount: number,
+  password: string,
+) {
+  if (!encryptUtils.decryptPassword(password, card.password)) {
+    throw errorUtils.generateError({
+      type: "UnauthorizedError",
+      message: "This password is incorrect.",
+    });
+  }
+
+  const business = await businessExists(businessId);
+
+  await areSameType(card, business);
+
+  await cardHasBalance(card, amount);
+
+  await paymentRepository.insert({ cardId: card.id, businessId, amount });
+}
+
+export async function purchaseItemOnline(
+  card: cardRepository.Card,
+  businessId: number,
+  amount: number,
+) {
+  const business = await businessExists(businessId);
+
+  await areSameType(card, business);
+
+  await cardHasBalance(card, amount);
 
   await paymentRepository.insert({ cardId: card.id, businessId, amount });
 }
