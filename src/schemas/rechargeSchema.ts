@@ -5,5 +5,5 @@ export const rechargeSchemaParams = Joi.object({
 });
 
 export const rechargeSchemaBody = Joi.object({
-  amount: Joi.number().greater(0).required(),
+  amount: Joi.number().integer().greater(0).required(),
 });

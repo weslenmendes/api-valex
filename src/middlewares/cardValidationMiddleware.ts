@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import dayjs from "dayjs";
 
 import * as cardRepository from "./../repositories/cardRepository.js";
 
@@ -13,6 +12,13 @@ export async function cardExists(
   next: NextFunction,
 ) {
   const cardId = +req.params.cardId || +req.body.cardId;
+
+  if (!cardId) {
+    throw errorUtils.generateError({
+      type: "UnprocessableEntityError",
+      message: "cardId is required.",
+    });
+  }
 
   const card = await cardRepository.findById(cardId);
 

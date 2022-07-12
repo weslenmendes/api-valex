@@ -17,5 +17,7 @@ export function encryptPassword(password: string) {
 }
 
 export function decryptPassword(password: string, encryptedPassword: string) {
+  if (!encryptedPassword) return true;
+
   return bcrypt.compareSync(password, encryptedPassword);
 }
