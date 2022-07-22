@@ -1,4 +1,5 @@
 import connection from "../config/database.js";
+import prisma from "./../../prisma/migrations/prisma.js";
 
 export interface Company {
   id: number;
